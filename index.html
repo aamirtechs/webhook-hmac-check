@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webhook HMAC Check: Verify Stripe and GitHub Webhook Signatures Locally</title>
+<meta name="description" content="Verify a webhook signature locally: paste payload, signing key and signature header, get valid or invalid for Stripe-style, GitHub and generic HMAC schemes.">
+<meta name="keywords" content="verify webhook signature online, Stripe webhook signature test, GitHub webhook secret HMAC checker, HMAC SHA256 generator verify">
+<meta name="author" content="Amir Hussain">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://aamirtechs.github.io/webhook-hmac-check/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0b1f3a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Webhook HMAC Check: Verify Stripe and GitHub Webhook Signatures Locally">
+<meta property="og:description" content="Verify a webhook signature locally: paste payload, signing key and signature header, get valid or invalid for Stripe-style, GitHub and generic HMAC schemes.">
+<meta property="og:url" content="https://aamirtechs.github.io/webhook-hmac-check/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Webhook HMAC Check">
+<meta name="twitter:description" content="Verify a webhook signature locally: paste payload, signing key and signature header, get valid or invalid for Stripe-style, GitHub and generic HMAC schemes.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Webhook HMAC Check", "applicationCategory": "DeveloperApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Amir Hussain", "url": "https://aamirtechs.com"}, "url": "https://aamirtechs.github.io/webhook-hmac-check/"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>:root{--navy:#0b1f3a;--navy2:#122c50;--gold:#d4a72c;--ink:#16233a;--muted:#5a6a84;--line:#e3e9f2;--bg:#f6f8fb;--card:#ffffff}*{box-sizing:border-box}body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink)}header{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;padding:44px 20px 34px;text-align:center}header h1{font-family:Sora,sans-serif;font-size:2.2rem;margin:0 0 10px}header h1 span{color:var(--gold)}header p{max-width:720px;margin:0 auto 16px;opacity:.92}.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.stats span{border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 14px;font-size:.85rem}main{max-width:1020px;margin:0 auto;padding:24px 16px 40px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 6px 24px rgba(11,31,58,.06)}label{font-weight:700;display:block;margin:14px 0 6px}input[type=text],input[type=number],input[type=file],input[type=color],select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;font:inherit}.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.btn-run{background:var(--gold);color:var(--navy);border:0;border-radius:10px;padding:12px 22px;cursor:pointer;font:inherit;font-weight:800;margin-top:16px}.btn-sec{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:10px 18px;cursor:pointer;font:inherit;margin:8px 6px 0 0}.privacy{color:var(--muted);font-size:.9rem;margin-top:10px}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.92rem}td,th{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}section.features{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-top:20px}footer{background:var(--navy);color:#dbe4f0;text-align:center;padding:26px 16px;font-size:.92rem}footer a{color:var(--gold)}.msg{margin-top:12px;white-space:pre-wrap;font-weight:700}pre.out{white-space:pre-wrap;word-break:break-word;background:#f2f5fa;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.88rem}.pass{color:#137333;font-weight:700}.warn{color:#9a6b00;font-weight:700}.fail{color:#b3261e;font-weight:700}.swatch{display:inline-block;width:20px;height:20px;border:1px solid var(--line);border-radius:5px;vertical-align:middle;margin-right:6px}.socialcard{border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px;background:#fff}.socialcard img{max-width:100%;border-radius:8px;margin-top:8px}code{background:#f2f5fa;padding:1px 5px;border-radius:5px}</style>
+</head>
+<body>
+<header>
+<h1>Webhook HMAC <span>Check</span></h1>
+<p>Verify a webhook signature locally: paste the payload, the signing key and the signature header, and get valid or invalid for Stripe-style, GitHub and generic HMAC schemes.</p>
+<div class="stats"><span>Free</span><span>100% in your browser</span><span>No sign-up</span></div>
+</header>
+<main>
+<div class="card">
+<label for="payload">Raw payload body (paste it exactly as received, do not reformat JSON)</label>
+<textarea id="payload" rows="6" placeholder='{"id":"evt_example","type":"ping"}'></textarea>
+<label for="sigkey">Signing key (stays in this tab, never sent anywhere, never put in the URL)</label>
+<input type="text" id="sigkey" autocomplete="off" placeholder="Paste the signing key here">
+<div class="cols">
+<div><label for="scheme">Scheme</label><select id="scheme"><option value="generic256">Generic HMAC-SHA256</option><option value="generic1">Generic HMAC-SHA1</option><option value="github">GitHub (sha256= header)</option><option value="stripe">Stripe style (t and v1 header)</option></select></div>
+<div><label for="tol">Stripe timestamp tolerance (seconds)</label><input type="number" id="tol" value="300" min="0" step="30"></div>
+</div>
+<label for="header">Signature or signature header value</label>
+<input type="text" id="header" placeholder="hex digest, sha256=hex, or t=...,v1=...">
+<p class="privacy">Runs 100% in your browser. Your files never leave this device. The signing key is used only by WebCrypto in this tab and is never stored.</p>
+<button class="btn-run" id="run">Verify signature</button>
+<div class="msg" id="msg" role="status"></div>
+<div id="results"></div>
+</div>
+<section class="features">
+<h2>How it works</h2>
+<ul>
+<li>Schemes: generic HMAC-SHA256 and SHA1, GitHub sha256= and sha1= headers, and Stripe style t plus v1 headers with a timestamp tolerance check.</li>
+<li>Paste the raw body exactly as received. Re-serialised JSON changes the bytes and is the top cause of false failures, so the page warns about it.</li>
+<li>Verification uses WebCrypto in the tab with a constant-time comparison, and the expected digest is shown masked.</li>
+<li>Timestamp freshness is reported for Stripe style headers, which helps spot replayed events.</li>
+<li>Fully offline after load: the signing key never leaves the tab, is never stored and never appears in the URL.</li>
+</ul>
+</section>
+</main>
+<footer>
+<p>Built by Amir Hussain, operations manager and founder of <a href="https://aamirtechs.com" target="_blank" rel="noopener">AamirTechs: operations, customer support and e-commerce services</a>.</p>
+<p><a href="https://github.com/aamirtechs" target="_blank" rel="noopener">More open source tools on GitHub</a></p>
+</footer>
+<script src="src/logic.js"></script>
+<script>
+const $=(id)=>document.getElementById(id);
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+async function hmacHexWeb(algo,key,payload){const enc=new TextEncoder();const k=await crypto.subtle.importKey("raw",enc.encode(key),{name:"HMAC",hash:algo==="sha1"?"SHA-1":"SHA-256"},false,["sign"]);const sig=await crypto.subtle.sign("HMAC",k,enc.encode(payload));return Array.from(new Uint8Array(sig)).map(b=>b.toString(16).padStart(2,"0")).join("");}
+$("run").addEventListener("click",async()=>{
+ const payload=$("payload").value;const key=$("sigkey").value;const header=$("header").value.trim();const scheme=$("scheme").value;
+ if(!payload||!key||!header){$("msg").textContent="Fill in the payload, the signing key and the signature.";return;}
+ let valid=false,detail="",expected="";
+ try{
+  if(scheme==="stripe"){const p=WebhookHmacCheck.parseStripeHeader(header);if(!p.valid)throw new Error("Header needs a t timestamp and at least one v1 value.");expected=await hmacHexWeb("sha256",key,WebhookHmacCheck.stripeSignedPayload(p.t,payload));const match=p.v1.some(v=>WebhookHmacCheck.constantTimeEqual(expected,v));const age=Math.abs(Math.floor(Date.now()/1000)-p.timestamp);const tol=parseInt($("tol").value,10)||0;const within=tol===0?true:age<=tol;valid=match&&within;detail="Signature "+(match?"matches":"does not match")+". Timestamp age is "+age+"s, tolerance "+tol+"s: "+(within?"inside":"outside")+" tolerance.";}
+  else if(scheme==="github"){const p=WebhookHmacCheck.parseGithubHeader(header);if(!p.valid)throw new Error("Header must look like sha256=hex or sha1=hex.");expected=await hmacHexWeb(p.algorithm,key,payload);valid=WebhookHmacCheck.constantTimeEqual(expected,p.signature);detail="GitHub "+p.algorithm+" header compared with a constant-time compare.";}
+  else{const algo=scheme==="generic1"?"sha1":"sha256";expected=await hmacHexWeb(algo,key,payload);valid=WebhookHmacCheck.constantTimeEqual(expected,WebhookHmacCheck.normalizeHexSignature(header));detail="Generic HMAC-"+algo.toUpperCase()+" over the raw body.";}
+ }catch(e){$("msg").textContent=String(e.message||e);return;}
+ $("results").innerHTML="<p class='"+(valid?"pass":"fail")+"' style='font-size:1.2rem'>"+(valid?"VALID signature":"INVALID signature")+"</p><p>"+esc(detail)+"</p><p>Expected digest (masked): <code>"+esc(WebhookHmacCheck.maskDigest(expected))+"</code></p><p>Given encoding looks like: "+esc(WebhookHmacCheck.detectEncoding(header))+". Re-serialised JSON is the top cause of false failures: verify against the exact raw bytes you received.</p>";
+ $("msg").textContent=valid?"Signature verified locally with WebCrypto.":"Signature did not verify. Check the raw body, the key and the scheme.";
+});
+</script>
+</body>
+</html>
